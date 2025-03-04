@@ -1,3 +1,7 @@
-__pycache__/main.cpython-313.pyc
-__pycache__/config.cpython-313.pyc
-__pycache__/database.cpython-313.pyc
+# Ignorar la carpeta __pycache__
+__pycache__/
+
+# También puedes incluir otros archivos y carpetas que no quieras subir al repositorio, por ejemplo:
+env/
+*.pyc
+*.pyo
