@@ -4,6 +4,7 @@ from entities.serviceOrder import ServiceOrder, ServiceOrderPart, ServiceOrderSt
 from entities.vehicle import Vehicle
 from entities.part import Part
 from models.serviceOrderModel import ServiceOrderModel
+from models.serviceOrderStateModel import ServiceOrderStateModel
 from models.vehicleModel import VehicleModel
 from models.partModel import PartModel
 from peewee import ModelSelect
@@ -132,10 +133,10 @@ def create_service_order(order: ServiceOrderModel):
 
 @app.put(
     "/service_orders/{order_id}/state",
-    response_model=ServiceOrderModel,
+    response_model=ServiceOrderStateModel,
     dependencies=[Depends(get_db)],
 )
-def update_service_order_state(order_id: int, state: ServiceOrderState):
+def update_service_order_state(order_id: int, state: ServiceOrderStateModel):
     """
     Actualiza el estado de una orden de servicio.
 
@@ -147,12 +148,13 @@ def update_service_order_state(order_id: int, state: ServiceOrderState):
         ServiceOrderModel: La orden de servicio actualizada.
     """
     try:
+        print(state)
         order = ServiceOrder.get_by_id(order_id)
-        if state not in ServiceOrderState:
+        if state.state not in ServiceOrderState:
             raise HTTPException(status_code=400, detail="Invalid state")
-        order.state = state.value
+        order.state = state.state.value
         order.save()
-        return order
+        return state
     except ServiceOrder.DoesNotExist:
         raise HTTPException(status_code=404, detail="Service order not found")
     except Exception as e:
